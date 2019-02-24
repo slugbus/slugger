@@ -30,6 +30,11 @@ func OverrideURL(url string) {
 	tapsAPIURL = url
 }
 
+// RestoreURL sets the TAPS URL back to the default of http://bts.ucsc.edu:8081/location/get.
+func RestoreURL() {
+	tapsAPIURL = "http://bts.ucsc.edu:8081/location/get"
+}
+
 // Query calls the TAPS API URL (default: http://bts.ucsc.edu:8081/location/get), and
 // returns a slice of Buses if successful.
 func Query() ([]Bus, error) {
