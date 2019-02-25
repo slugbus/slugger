@@ -60,4 +60,34 @@ func TestQuery(t *testing.T) {
 			t.Errorf("got no response")
 		}
 	})
+
+	// If we get a successful query, test to make
+	// sure none of the results are their 0 values.
+	t.Run("Default Check", func(t *testing.T) {
+		got, err := Query()
+		if err != nil {
+			t.Errorf("got err: %v, wanted: nil", err)
+		}
+
+		for _, bus := range got {
+
+			if bus.ID == "" {
+				t.Errorf("got default value for ID, got %q , did not want %q", bus.ID, bus.ID)
+			}
+
+			if bus.Type == "" {
+				t.Errorf("got default value for Type, got %q , did not want %q", bus.Type, bus.Type)
+			}
+
+			if bus.Lat == 0 {
+				t.Errorf("got default value for Lat, got %v , did not want %v", bus.Lat, bus.Lat)
+			}
+
+			if bus.Lon == 0 {
+				t.Errorf("got default value for Lon, got %v , did not want %v", bus.Lon, bus.Lon)
+			}
+
+		}
+
+	})
 }

@@ -30,7 +30,7 @@ import (
 // from the UCSC TAPS server.
 type Bus struct {
 	ID   string  `json:"id"`
-	Lon  float64 `json:"lng"`
+	Lon  float64 `json:"lon"`
 	Lat  float64 `json:"lat"`
 	Type string  `json:"type"`
 }
