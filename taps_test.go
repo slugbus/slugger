@@ -89,3 +89,64 @@ func TestQuery(t *testing.T) {
 
 	})
 }
+
+func TestQueryAsMap(t *testing.T) {
+
+	t.Run("OK Query", func(t *testing.T) {
+		tbus, err := Query()
+		if err != nil {
+			t.Errorf("got err: %v, wanted nil", err)
+		}
+		mbus, err := QueryAsMap()
+		if err != nil {
+			t.Errorf("got err: %v, wanted nil", err)
+		}
+
+		if len(tbus) != len(mbus) {
+			t.Errorf("lengths do no math %v != %v", len(tbus), len(mbus))
+		}
+
+		for _, bus := range tbus {
+			if _, ok := mbus[bus.ID]; !ok {
+				t.Errorf("bus in query is not in map, %v", bus)
+			}
+		}
+
+	})
+
+	t.Run("Possibly OK Query", func(t *testing.T) {
+		OverrideURL("http://0.0.0.0:9191/location/get")
+		tbus, err := Query()
+		if err != nil {
+			// This isn't an error it just means the mock server is not
+			// running
+			return
+		}
+		mbus, err := QueryAsMap()
+		if err != nil {
+			// Same reason as above.
+			return
+		}
+
+		if len(tbus) != len(mbus) {
+			t.Errorf("lengths do no math %v != %v", len(tbus), len(mbus))
+		}
+
+		for _, bus := range tbus {
+			if _, ok := mbus[bus.ID]; !ok {
+				t.Errorf("bus in query is not in map, %v", bus)
+			}
+		}
+
+	})
+
+	t.Run("Bad Query", func(t *testing.T) {
+		OverrideURL("BAD")
+		_, err := QueryAsMap()
+		if err == nil {
+			t.Errorf("got nil, wanted error")
+		}
+
+	})
+
+}
