@@ -1,14 +1,14 @@
-# Slugger
-[![GoDoc](https://godoc.org/github.com/slugbus/slugger?status.svg)](https://godoc.org/github.com/slugbus/slugger) [![Go Report Card](https://goreportcard.com/badge/github.com/slugbus/slugger)](https://goreportcard.com/report/github.com/slugbus/slugger)
+# Taps
+[![GoDoc](https://godoc.org/github.com/slugbus/taps?status.svg)](https://godoc.org/github.com/slugbus/taps) [![Go Report Card](https://goreportcard.com/badge/github.com/slugbus/taps)](https://goreportcard.com/report/github.com/slugbus/taps)
 
-## What is Slugger?
-`Slugger` is  go client library for the UCSC TAPS API. It is meant to simplify the interaction between your code and the TAPS API.
+## What is Taps?
+`Taps` is  go client library for the UCSC TAPS API. It is meant to simplify the interaction between your code and the TAPS API.
 
 ## Installation
-Install/Update `Slugger` by using the `go get` tool.
+Install/Update `Taps` by using the `go get` tool.
 
 ```bash
-$ go get -u github.com/slugbus/slugger
+$ go get -u github.com/slugbus/taps
 ```
 
 ## Documentation
