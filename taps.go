@@ -81,6 +81,15 @@ func Query() ([]Bus, error) {
 	return tbuses, nil
 }
 
+// MapFromQuery transforms a slice of Bus to a BusMap.
+func MapFromQuery(tbus []Bus) BusMap {
+	mbus := BusMap{}
+	for _, bus := range tbus {
+		mbus[bus.ID] = bus
+	}
+	return mbus
+}
+
 // QueryAsMap calls the taps API similar to Query and returns
 // a BusMap if successful.
 func QueryAsMap() (BusMap, error) {
@@ -88,9 +97,6 @@ func QueryAsMap() (BusMap, error) {
 	if err != nil {
 		return nil, err
 	}
-	mbus := BusMap{}
-	for _, bus := range tbus {
-		mbus[bus.ID] = bus
-	}
+	mbus := MapFromQuery(tbus)
 	return mbus, nil
 }
