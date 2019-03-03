@@ -33,6 +33,11 @@ type Bus struct {
 	Type string  `json:"type"`
 }
 
+// BusMap is a collection of buses
+// where the key is an bus.ID and the
+// value is the corresponding Bus struct.
+type BusMap map[string]Bus
+
 var tapsAPIURL = "http://bts.ucsc.edu:8081/location/get"
 
 // OverrideURL overides the default TAPS API URL (http://bts.ucsc.edu:8081/location/get)
@@ -74,4 +79,18 @@ func Query() ([]Bus, error) {
 	}
 	// If successful, return the slice.
 	return tbuses, nil
+}
+
+// QueryAsMap calls the taps API similar to Query and returns
+// a BusMap if successful.
+func QueryAsMap() (BusMap, error) {
+	tbus, err := Query()
+	if err != nil {
+		return nil, err
+	}
+	mbus := BusMap{}
+	for _, bus := range tbus {
+		mbus[bus.ID] = bus
+	}
+	return mbus, nil
 }
