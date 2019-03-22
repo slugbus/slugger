@@ -38,33 +38,34 @@ type Bus struct {
 // value is the corresponding Bus struct.
 type BusMap map[string]Bus
 
-var tapsAPIURL = "http://bts.ucsc.edu:8081/location/get"
+// Source is a string that defines
+// what URL should be called
+type Source string
 
-// OverrideURL overides the default TAPS API URL (http://bts.ucsc.edu:8081/location/get)
-// to the given url.
-// This should be used for development purposes only.
-func OverrideURL(url string) {
-	tapsAPIURL = url
+const defaultSource = Source("http://bts.ucsc.edu:8081/location/get")
+
+// Source functions:
+
+// NewSource returns a new source struct
+// with url: url.
+func NewSource(url string) Source {
+	return Source(url)
 }
 
-// RestoreURL sets the TAPS URL back to the default of http://bts.ucsc.edu:8081/location/get.
-func RestoreURL() {
-	tapsAPIURL = "http://bts.ucsc.edu:8081/location/get"
-}
-
-// Query calls the TAPS API URL (default: http://bts.ucsc.edu:8081/location/get), and
+// Query calls the Source URL, and
 // returns a slice of Buses if successful.
-func Query() ([]Bus, error) {
+func (s Source) Query() ([]Bus, error) {
+	url := string(s)
 	// Query the tapsAPIURL.
-	resp, err := http.Get(tapsAPIURL)
+	resp, err := http.Get(url)
 	if err != nil {
-		return nil, errors.Wrapf(err, "could not query %s", tapsAPIURL)
+		return nil, errors.Wrapf(err, "could not query %s", url)
 	}
 	// Remember to close the body.
 	defer resp.Body.Close()
 	// Check for successful http code.
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("got invalid status code (%d) from %s", resp.StatusCode, tapsAPIURL)
+		return nil, fmt.Errorf("got invalid status code (%d) from %s", resp.StatusCode, url)
 	}
 	// Read the body of the response.
 	tbytes, err := ioutil.ReadAll(resp.Body)
@@ -81,6 +82,19 @@ func Query() ([]Bus, error) {
 	return tbuses, nil
 }
 
+// QueryAsMap calls the source API similar to Query and returns
+// a BusMap if successful.
+func (s Source) QueryAsMap() (BusMap, error) {
+	tbus, err := s.Query()
+	if err != nil {
+		return nil, err
+	}
+	mbus := MapFromQuery(tbus)
+	return mbus, nil
+}
+
+// Package Functions
+
 // MapFromQuery transforms a slice of Bus to a BusMap.
 func MapFromQuery(tbus []Bus) BusMap {
 	mbus := BusMap{}
@@ -90,13 +104,14 @@ func MapFromQuery(tbus []Bus) BusMap {
 	return mbus
 }
 
+// Query calls the official TAPS API URL, and
+// returns a slice of Buses if successful.
+func Query() ([]Bus, error) {
+	return defaultSource.Query()
+}
+
 // QueryAsMap calls the taps API similar to Query and returns
 // a BusMap if successful.
 func QueryAsMap() (BusMap, error) {
-	tbus, err := Query()
-	if err != nil {
-		return nil, err
-	}
-	mbus := MapFromQuery(tbus)
-	return mbus, nil
+	return defaultSource.QueryAsMap()
 }
