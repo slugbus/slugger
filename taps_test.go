@@ -20,7 +20,7 @@ import (
 )
 
 func TestQuery(t *testing.T) {
-	// The deefault query should be okay.
+	// The default query should be okay.
 	t.Run("OK Query", func(t *testing.T) {
 		got, err := Query()
 		if err != nil {
@@ -35,8 +35,8 @@ func TestQuery(t *testing.T) {
 	tURLs := []string{"https://www.random.org/bad_url", "bad_url", "https://jsonplaceholder.typicode.com/todos"}
 	for _, url := range tURLs {
 		t.Run(fmt.Sprintf("Bad Query: %s", url), func(t *testing.T) {
-			OverrideURL(url)
-			got, err := Query()
+			s := NewSource(url)
+			got, err := s.Query()
 			if err == nil {
 				t.Errorf("got no error, wanted error")
 			}
@@ -48,7 +48,6 @@ func TestQuery(t *testing.T) {
 
 	// Reseting the URL should make the
 	// first test pass, despite the changes above.
-	RestoreURL()
 	t.Run("OK Query", func(t *testing.T) {
 		got, err := Query()
 		if err != nil {
@@ -115,14 +114,14 @@ func TestQueryAsMap(t *testing.T) {
 	})
 
 	t.Run("Possibly OK Query", func(t *testing.T) {
-		OverrideURL("http://0.0.0.0:9191/location/get")
-		tbus, err := Query()
+		s := NewSource("http://0.0.0.0:9191/location/get")
+		tbus, err := s.Query()
 		if err != nil {
 			// This isn't an error it just means the mock server is not
 			// running
 			return
 		}
-		mbus, err := QueryAsMap()
+		mbus, err := s.QueryAsMap()
 		if err != nil {
 			// Same reason as above.
 			return
@@ -141,8 +140,8 @@ func TestQueryAsMap(t *testing.T) {
 	})
 
 	t.Run("Bad Query", func(t *testing.T) {
-		OverrideURL("BAD")
-		_, err := QueryAsMap()
+		s := NewSource("BAD")
+		_, err := s.QueryAsMap()
 		if err == nil {
 			t.Errorf("got nil, wanted error")
 		}
