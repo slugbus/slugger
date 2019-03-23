@@ -1,4 +1,4 @@
-module github.com/slugbus/taps
+module github.com/slugbus/taps/v2
 
 go 1.12
 
