@@ -19,6 +19,22 @@ import (
 	"testing"
 )
 
+func mergeTest(t *testing.T) {
+	t.Run()
+	testBus1 := Bus{"Bus One", 60.0, 60.0, "type"}
+	updatedTestBus := UpdatedBus{testBus1, 30.0, 30.0}
+
+	busOneMap := BusMap{}
+	busOneMap[testBus1.ID] = testBus1
+	updatedBusOneMap := UpdatedBusMap{}
+	updatedBusOneMap[updatedTestBus.ID] = updatedTestBus
+
+	mergedUpdatedBusMap := mergeWithState(busOneMap, 30.0, updatedBusOneMap)
+
+	fmt.Printf("ID: %s\n, Speed: %f\n", mergedUpdatedBusMap[updatedTestBus.ID].ID, mergedUpdatedBusMap[updatedTestBus.ID].Speed)
+
+}
+
 func TestQuery(t *testing.T) {
 	// The default query should be okay.
 	t.Run("OK Query", func(t *testing.T) {
