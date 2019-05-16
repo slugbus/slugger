@@ -32,11 +32,12 @@ type Bus struct {
 	Lat  float64 `json:"lat"`
 	Type string  `json:"type"`
 }
+
 // Updated Bus is a structure that
 // contains the updated json response
 // from the UCSC Taps server
 type UpdatedBus struct {
-	Bus 	// contains the original bus struct 
+	Bus           // contains the original bus struct
 	Speed float64 `json:"speed"`
 	Angle float64 `json:"angle"`
 }
@@ -47,9 +48,9 @@ type UpdatedBus struct {
 type BusMap map[string]Bus
 
 // Updated BusMap is a collection of updated buses
-// where the key is an updatedbus.bus.id and the 
+// where the key is an updatedbus.bus.id and the
 // value is the corresponding UpdatedBus struct
-type UpatedBusMap map[string]UpdatedBus
+type UpdatedBusMap map[string]UpdatedBus
 
 // Source is a string that defines
 // what URL should be called

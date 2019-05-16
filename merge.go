@@ -1,54 +1,48 @@
-package bus
-
-import (
-	"github.com/slugbus/backend-server/internal/geo"
-	"github.com/slugbus/taps"
-)
+package taps
 
 // This function merges a new ping response with the current
 // response
-func mergeWithState(p SlugResponse, t float64) SlugResponsePlusPlus {
-	pingHash := map[string]taps.Bus{}
-	stateHash := map[string]BusDataPlusPlus{}
-
-	// Hash the buses from the
-	// old and current state into
-	// their own tables
-	for _, bus := range p {
-		pingHash[bus.ID] = bus
-	}
-	for _, bus := range CurrentBusState {
-		stateHash[bus.ID] = bus
-	}
-
+func mergeWithState(newPing BusMap, time float64, currentBusMap UpdatedBusMap) UpdatedBusMap {
 	// Prepare the new state.
-	ns := SlugResponsePlusPlus{}
+	newUpdatedBusMap := UpdatedBusMap{}
 
-	for key, pingBus := range pingHash {
-		// Prepare the struct
-		dataPoint := BusDataPlusPlus{
+	for key, pingBus := range newPing {
+		// Prepare a new UpdatedBus struct for each bus in the new ping
+		newUpdatedBus := UpdatedBus{
 			Bus: pingBus,
 		}
 		// Check to see if the bus we're looking
 		// at was in our previous state, if it was
-		// update it with speed and angle values
-		if stateBus, isInState := stateHash[key]; isInState {
-			distance := geo.Dist(stateBus.Lat, stateBus.Lon, pingBus.Lat, pingBus.Lon)
-			dataPoint.Speed = geo.Speed(distance, t)
-			dataPoint.Angle = geo.Dir(stateBus.Lat, stateBus.Lon, pingBus.Lat, pingBus.Lon)
+		// update it with speed and angle value
+		//isBusStillRunning = currentBusMap[key] // is the key in the existing UpdatedBusMap
+		if _, exists := currentBusMap[key]; exists {
+			//testing
+			newUpdatedBus.Speed = 100.0
+			newUpdatedBus.Angle = 3000.0
+
+			//distance := geo.Dist(stateBus.Lat, stateBus.Lon, pingBus.Lat, pingBus.Lon)
+			//newUpdatedBus.Speed = geo.Speed(distance, t)
+			//newUpdated.Angle = geo.Dir(stateBus.Lat, stateBus.Lon, pingBus.Lat, pingBus.Lon)
 		}
 
-		// Always push the new bus into the new state
-		ns = append(ns, dataPoint)
+		/*if stateBus, isInState := currentBusMap[key]; isInState {
+
+			//distance := geo.Dist(stateBus.Lat, stateBus.Lon, pingBus.Lat, pingBus.Lon)
+			//dataPoint.Speed = geo.Speed(distance, t)
+			//dataPoint.Angle = geo.Dir(stateBus.Lat, stateBus.Lon, pingBus.Lat, pingBus.Lon)
+		} */
+
+		// Always push the new bus into the new updated bus map
+		newUpdatedBusMap[key] = newUpdatedBus
 	}
 
-	return ns
+	return newUpdatedBusMap
 }
 
-// Merge update takes in two regular responses from the server
+/* // Merge update takes in two regular responses from the server
 // and t (that is in milliseconds) and combines them to get speed
 // and angle data.
-func mergeUpdate(p, q SlugResponse, t float64) SlugResponsePlusPlus {
+func mergeUpdate(p, q Bus, t float64) UpdatedBusMap {
 	// Make of map of strings
 	// to buses
 	mb := map[string]taps.Bus{}
@@ -60,7 +54,7 @@ func mergeUpdate(p, q SlugResponse, t float64) SlugResponsePlusPlus {
 		mb[bus.ID] = bus
 	}
 	// Prepare a result
-	result := SlugResponsePlusPlus{}
+	result := UpdatedBus{}
 	// Loop through the second ping
 	for _, pingTwoBus := range q {
 		// Make a bus with angles and speed
@@ -79,3 +73,4 @@ func mergeUpdate(p, q SlugResponse, t float64) SlugResponsePlusPlus {
 	}
 	return result
 }
+*/
